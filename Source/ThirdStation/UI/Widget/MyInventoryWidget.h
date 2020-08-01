@@ -27,7 +27,7 @@ public:
     
     void UpdateInventoryImage(UTexture2D* InventoryTexture, bool bMatchSize);
 
-    void ClearInventoryImage();
+    // void ClearInventoryImage();
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     class UTextBlock* InventoryTextBlock;

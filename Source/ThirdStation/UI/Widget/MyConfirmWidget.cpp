@@ -13,8 +13,8 @@ void UMyConfirmWidget::NativeConstruct(){
     bConfirm = false;
 
     Regular = FLinearColor(0.25f, 0.32f, 0.71f, 0.7f);
-    Select = FLinearColor(0.1f, 0.73f, 0.83f, 0.7f);
-    Chosen = FLinearColor(0.8f, 0.86f, 0.22f, 0.7f);
+    Select = FLinearColor(0.22f, 1.0f, 0.07f, 0.7f);
+    // Chosen = FLinearColor(0.8f, 0.86f, 0.22f, 0.7f);
 
 }
 

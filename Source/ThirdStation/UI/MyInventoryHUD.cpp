@@ -13,7 +13,10 @@ void AMyInventoryHUD::DrawHUD(){
 
 void AMyInventoryHUD::BeginPlay(){
     Super::BeginPlay();
+
     
+    
+    //creating widgets
     if(ItemWidgetClass){
         ItemWidget = CreateWidget<UMyItemWidget>(GetWorld(), ItemWidgetClass);
         ItemWidget->AddToViewport();
@@ -23,7 +26,9 @@ void AMyInventoryHUD::BeginPlay(){
     
     if(InventoryWidgetClass){
         InventoryWidget = CreateWidget<UMyInventoryWidget>(GetWorld(), InventoryWidgetClass);
+        // InventoryWidget->UpdateInventoryImage(*MyTextureMap.Find(FString(TEXT("Empty"))), true);
         InventoryWidget->AddToViewport();
+        UE_LOG(LogTemp, Warning, TEXT("inventory yay"));
     }
 
     if(ConfirmWidgetClass){
@@ -37,61 +42,12 @@ void AMyInventoryHUD::BeginPlay(){
         FinalWidget->AddToViewport();
         FinalWidget->SetVisibility(ESlateVisibility::Hidden);
     }
-
-
-    TArray<FString> shovel;
-        shovel.Add(FString(TEXT("mustard seeds")));
-        shovel.Add(FString(TEXT("wheat seeds")));
-        shovel.Add(FString(TEXT("olive seeds")));
-
-        TArray<FString> incense;
-        incense.Add(FString(TEXT("frankincense")));
-        incense.Add(FString(TEXT("stacte")));
-        incense.Add(FString(TEXT("cinnimon bark")));
-        incense.Add(FString(TEXT("saffron")));
-
-
-        TArray<FString> staff;
-        staff.Add(FString(TEXT("wool")));
-        staff.Add(FString(TEXT("meat")));
-        staff.Add(FString(TEXT("milk")));
-
-        TArray<FString> vial;
-        vial.Add(FString(TEXT("spikenard")));
-
-        TArray<FString> cloth;
-        cloth.Add(FString(TEXT("myrrh")));
-        cloth.Add(FString(TEXT("aloe")));
-
-        TArray<FString> mold;
-        mold.Add(FString(TEXT("copper")));
-        mold.Add(FString(TEXT("silver")));
-        mold.Add(FString(TEXT("gold")));
-
-    //     initMap(FString(TEXT("1")), One, false);
-    //     initMap(FString(TEXT("2")), Two, false);
-    //     initMap(FString(TEXT("3")), Three, false);
-        initMaterialView(FString(TEXT("shovel")), shovel);
-        initMaterialView(FString(TEXT("incense dispenser")), incense);
-        initMaterialView(FString(TEXT("shepard's staff")), staff);
-        initMaterialView(FString(TEXT("perfume vial")), vial);
-        initMaterialView(FString(TEXT("coin mold")), mold);
-        initMaterialView(FString(TEXT("burial cloth")), cloth);
-        UE_LOG(LogTemp, Warning, TEXT("beginplay"));
     
 }
 
 /////////////////////////////////////////////////
 //ITEMWIDGET
 void AMyInventoryHUD::UpdateItemText(FString ItemName){
-    
-//    if(ItemWidget && !(ItemWidget->IsInViewport())){
-//        ItemWidget->AddToViewport();
-//    }
-//
-//    if(ItemWidget){
-//        ItemWidget->UpdateItemText(ItemName);
-//    }
     if(ItemWidget){
         ItemWidget->UpdateItemText(FText::FromString(ItemName));
         
@@ -115,34 +71,56 @@ void AMyInventoryHUD::ClearItemText(){
 
 /////////////////////////////////////////////////
 //MATERIALVIEW WIDGET
-void AMyInventoryHUD::UpdateMaterialView(FString MappingName){
+void AMyInventoryHUD::UpdateMaterialView(FString MappingName, int8 InventoryType){
     UE_LOG(LogTemp, Warning, TEXT("start"));
     //null check
-    if(!MyMaterialMap.Find(MappingName)) return;
+    // MW->SetText(FString(TEXT(")));
 
-    UMyMaterialViewWidget* MW = *MyMaterialMap.Find(MappingName);
+    makeMaterialViewMap();
+
+
+
+    UMyMaterialViewWidget** FindMW = MyMaterialMap.Find(MappingName);
+    // UMyMaterialViewWidget* MW = *FindMW;
+
+    if(!FindMW  && (InventoryType == -1 || InventoryType == 1)) {
+        FindMW = MyMaterialMap.Find(FString(TEXT("message no")));
+        if(!FindMW){
+            return;
+        }
+    }
+
+    UMyMaterialViewWidget* MW = *FindMW;
+
     if(MW != nullptr){
+        CurrentMaterialView = MW;
+        
         UE_LOG(LogTemp, Warning, TEXT("in if"));
-        if(MW->Visibility == ESlateVisibility::Hidden){
+        if(CurrentMaterialView->Visibility == ESlateVisibility::Hidden){
             UE_LOG(LogTemp, Warning, TEXT("visibility"));
-            MW->SetVisibility(ESlateVisibility::Visible);
+            CurrentMaterialView->SetVisibility(ESlateVisibility::Visible);
         }
         MVIndex=0;
-        if(MW->MaterialWidgetArray.IsValidIndex(MVIndex)){
+        if(CurrentMaterialView->MaterialWidgetArray.IsValidIndex(MVIndex)){
             UE_LOG(LogTemp, Warning, TEXT("index"));
-            CurrentMaterialView = MW;
-            MW->MaterialWidgetArray[MVIndex]->setSelected(true);
+            CurrentMaterialView->MaterialWidgetArray[MVIndex]->setSelected(true);
         }
-
+        switch(InventoryType){
+            case -1:
+                CurrentMaterialView->SetText(FString(TEXT("Looks like your inventory is empty. Please get something to trade in.")));
+                break;
+            case 0:
+                CurrentMaterialView->SetText(FString(TEXT("What do you want trade for ")).Append(MappingName).Append(FString(TEXT("?"))));
+                break;
+            case 1:
+                CurrentMaterialView->SetText(FString(TEXT("Sorry no take backs. Please find something else to trade in.")));
+                break;
+            default:
+                break;
+        }
+        
     }
     UE_LOG(LogTemp, Warning, TEXT("end"));
-    // if(MaterialViewWidget){
-    //     MaterialViewWidget->AddChildren(MappingName);
-
-    //     if(MaterialViewWidget->Visibility == ESlateVisibility::Hidden){
-    //      MaterialViewWidget->SetVisibility(ESlateVisibility::Visible);
-    //     }
-    // }
 
 }
 
@@ -192,16 +170,6 @@ FString AMyInventoryHUD::GetMaterial(){
 }
 
 void AMyInventoryHUD::ResetMaterialView(){
-    // UE_LOG(LogTemp, Warning, TEXT("In reset"));
-    // if(CurrentMWArray && CurrentMWArray->IsValidIndex(Index) && CurrentMWArray->Num()>0){
-    //     UE_LOG(LogTemp, Warning, TEXT("In if"));
-    //     UMyMaterialWidget* MW = (*CurrentMWArray)[Index];
-    //     if(MW) {
-    //         MW->setSelected(false);
-    //     }
-    // }
-    // UE_LOG(LogTemp, Warning, TEXT("after if"));
-    // // Index = 0;
 
     if(CurrentMaterialView){ // && CurrentMaterialView->MaterialWidgetArray){
         TArray<UMyMaterialWidget*>* MWArr = &CurrentMaterialView->MaterialWidgetArray;
@@ -216,6 +184,56 @@ void AMyInventoryHUD::ResetMaterialView(){
 
 /////////////////////////////////////
 //Widget Construction
+void AMyInventoryHUD::makeMaterialViewMap(){
+    if(MyMaterialMap.Find(FString(TEXT("shovel")))){
+        return;
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("Constructing MAterial View"));
+
+    TArray<FString> shovel;
+    shovel.Add(FString(TEXT("mustard seeds")));
+    shovel.Add(FString(TEXT("wheat seeds")));
+    shovel.Add(FString(TEXT("olive seeds")));
+
+    TArray<FString> incense;
+    incense.Add(FString(TEXT("frankincense")));
+    incense.Add(FString(TEXT("stacte")));
+    incense.Add(FString(TEXT("cinnimon bark")));
+    incense.Add(FString(TEXT("saffron")));
+
+
+    TArray<FString> staff;
+    staff.Add(FString(TEXT("wool")));
+    staff.Add(FString(TEXT("meat")));
+    staff.Add(FString(TEXT("milk")));
+
+    TArray<FString> vial;
+    vial.Add(FString(TEXT("spikenard")));
+
+    TArray<FString> cloth;
+    cloth.Add(FString(TEXT("myrrh")));
+    cloth.Add(FString(TEXT("aloe")));
+
+    TArray<FString> mold;
+    mold.Add(FString(TEXT("copper")));
+    mold.Add(FString(TEXT("silver")));
+    mold.Add(FString(TEXT("gold")));
+
+    TArray<FString> empty;
+    initMaterialView(FString(TEXT("shovel")), shovel);
+    initMaterialView(FString(TEXT("incense dispenser")), incense);
+    initMaterialView(FString(TEXT("shepard's staff")), staff);
+    initMaterialView(FString(TEXT("perfume vial")), vial);
+    initMaterialView(FString(TEXT("coin mold")), mold);
+    initMaterialView(FString(TEXT("burial cloth")), cloth);
+
+    
+    initMaterialView(FString(TEXT("message no")), empty);
+    UE_LOG(LogTemp, Warning, TEXT("beginplay"));
+}
+
+
 TArray<UMyMaterialWidget*> AMyInventoryHUD::MakeWidgetArray(TArray<FString> ValueArr){
 //    if(!ValueArr) return nullptr;
 
@@ -225,6 +243,11 @@ TArray<UMyMaterialWidget*> AMyInventoryHUD::MakeWidgetArray(TArray<FString> Valu
         if(MaterialWidgetClass){
             UMyMaterialWidget* MW = CreateWidget<UMyMaterialWidget>(GetWorld(), MaterialWidgetClass);
             MW->initMaterialText(val);
+            UTexture2D** Texture2D = MyTextureMap.Find(val);
+            if(Texture2D && *Texture2D){
+
+                MW->initMaterialImage(*Texture2D, true);
+            }
             if(!MW->IsInViewport()){
                 MW->AddToViewport();
             }
@@ -238,14 +261,6 @@ TArray<UMyMaterialWidget*> AMyInventoryHUD::MakeWidgetArray(TArray<FString> Valu
 
 void AMyInventoryHUD::initMaterialView(FString Key, TArray<FString> ValueArr){
     
-    // if(!MyMaterialMap.Contains(Key) || (MyMaterialMap.Contains(Key) && Replace)){
-    //     //TODO
-    //     //ItemWidget = CreateWidget<UMaterialWidget>(GetWorld(), MaterialWidgetClass);
-    //     FMaterialWidgetArray FMWArr{};
-    //     FMWArr.MaterialViewArray = MakeWidgetArray(ValueArr);
-    //     MyMaterialMap.Add(Key, FMWArr);
-
-    
     if(MaterialViewWidgetClass){
         UMyMaterialViewWidget* MaterialViewWidget = CreateWidget<UMyMaterialViewWidget>(GetWorld(), MaterialViewWidgetClass);
         MaterialViewWidget->AddToViewport();
@@ -256,64 +271,6 @@ void AMyInventoryHUD::initMaterialView(FString Key, TArray<FString> ValueArr){
     
 }
 
-// /////////////////////////////////
-// //Get From Map
-// TArray<UMyMaterialWidget*> AMyInventoryHUD::GetMaterialWidgetArray(FString MappingName){
-// //    MaterialWidgetArray MWArr = MyMWMap.find(MappingName.ToString());
-//     FMaterialWidgetArray* MWArr = MyMaterialMap.Find(MappingName);
-//     if(MWArr){
-//         // print("not empty");
-        
-//         TArray<UMyMaterialWidget*> MaterialWidgetArr = MWArr->MaterialWidgetArray;
-//         // for(auto& val: MaterialWidgetarr){
-// 		// 	print(val->getString());
-// 		// }
-//         CurrentMWArray = &MaterialWidgetArr;
-//         Index = 0;//just in case
-//         if(MaterialWidgetArr.Num()>0) MaterialWidgetArr[Index]->setSelected(true);
-//         return MaterialWidgetArr;
-//     }
-//     else{
-//         // print("Empty");
-//         TArray<UMyMaterialWidget*> Empty;
-//         return Empty;
-//     }
-    
-    
-// }
-
-///////////////////////////////////////////
-//Indexing
-
-// void AMyInventoryHUD::MoveIndexInArray(bool Upwards){
-//     if(CurrentMWArray && CurrentMWArray->IsValidIndex(Index) && CurrentMWArray->Num()>0){
-//         (*CurrentMWArray)[Index]->setSelected(false);
-//         if(Upwards && CurrentMWArray->IsValidIndex(Index+1)){
-//             Index++;
-//         }
-//         else if(!Upwards && CurrentMWArray->IsValidIndex(Index-1)){
-//             Index--;
-//         }
-//         (*CurrentMWArray)[Index]->setSelected(true);
-//     }
-// }
-
-
-
-
-// FString AMyInventoryHUD::SelectMaterialWidget(){
-//     FString Str = FString(TEXT(""));
-//     if(CurrentMWArray && CurrentMWArray->IsValidIndex(Index) && CurrentMWArray->Num()>0){
-//         UMyMaterialWidget* MW = (*CurrentMWArray)[Index];
-//         if(MW){
-//             MW->setChosen();
-//             Str = MW->getString();
-//             MW->setSelected(false);
-
-//         }
-//     }
-//     return Str;
-// }
 
 /////////////////////////////////////////////////
 //CONFIRM WIDGET
@@ -369,6 +326,9 @@ void AMyInventoryHUD::UpdateFinalWidget(int8 InventoryType, bool IsCorrect, FStr
                 }
                 break;
 
+            case 2: 
+                FinalWidget->SetMessage(TEXT("Thanks for the help! I hope Jesus likes this :)"));
+                break;
             default:
                 return;
         }
@@ -392,7 +352,13 @@ void AMyInventoryHUD::ClearFinalWidget(){
 void AMyInventoryHUD::UpdateInventory(FText ItemName){
     if(InventoryWidget){
         InventoryWidget->UpdateInventoryText(ItemName);
-        //InventoryWidget->UpdateInventoryImage(getTexture(), true);
+        UTexture2D** Texture2DPtr = MyTextureMap.Find(ItemName.ToString());
+        if(!Texture2DPtr){
+            Texture2DPtr = MyTextureMap.Find(FString(TEXT("Empty")));
+            if(!Texture2DPtr) return;
+        }
+
+        if(Texture2DPtr) InventoryWidget->UpdateInventoryImage(*Texture2DPtr, true);
     }
 }
 
@@ -400,7 +366,11 @@ void AMyInventoryHUD::UpdateInventory(FText ItemName){
 void AMyInventoryHUD::ClearInventory(){
     if(InventoryWidget){
         InventoryWidget->ClearInventoryText();
+
+        UTexture2D** Texture2DPtr = MyTextureMap.Find(FString(TEXT("Empty")));
+        if(Texture2DPtr) InventoryWidget->UpdateInventoryImage(*Texture2DPtr, true);
         //InventoryWidget->ClearInventoryImage();
     }
     
 }
+

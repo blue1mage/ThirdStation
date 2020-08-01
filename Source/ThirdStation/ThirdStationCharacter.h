@@ -130,6 +130,7 @@ private:
     int8 CurrOverlapType;
 
 	bool bIsCorrect;
+	bool bActorIsDone;
 
 protected:
 	// APawn interface

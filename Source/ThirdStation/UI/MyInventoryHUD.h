@@ -12,7 +12,9 @@
 #include "Widget/MyMaterialWidget.h"
 #include "Widget/MyConfirmWidget.h"
 #include "Widget/MyFinalWidget.h"
+
 #include "Containers/Array.h"
+#include "Engine/Texture2D.h"
 
 #include "MyInventoryHUD.generated.h"
 
@@ -50,7 +52,7 @@ public:
     //MaterialView
     //get the MV
     UFUNCTION()
-    void UpdateMaterialView(FString MappingName);
+    void UpdateMaterialView(FString MappingName, int8 InventoryType);
 
     UFUNCTION()
     void ClearMaterialView();
@@ -66,7 +68,12 @@ public:
     UFUNCTION()
     void ResetMaterialView();
 
+    UFUNCTION()
+    void makeMaterialViewMap();
 
+    // //Helper for MakeWidgetArray
+    // UFUNCTION()
+    // void initilizeTexture();
     //Helper for initMaterialView
     UFUNCTION()
     TArray<UMyMaterialWidget*> MakeWidgetArray(TArray<FString> ValueArr);
@@ -98,6 +105,10 @@ public:
     UFUNCTION()
     void ClearInventory();
 
+    // //Textures
+    // UFUNCTION()
+    // UTexture2D* LoadTextureFromPath(const FString& Path);
+
 
 
     
@@ -118,6 +129,10 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "Widgets")
     TSubclassOf<UUserWidget> FinalWidgetClass;
+
+    /**Map to index*/
+    UPROPERTY(EditAnywhere)
+    TMap<FString, UTexture2D*> MyTextureMap;
     
 private:
     UPROPERTY()
@@ -137,8 +152,11 @@ private:
     TMap<FString, UMyMaterialViewWidget*> MyMaterialMap;
 
     UPROPERTY()
-    UMyMaterialViewWidget* CurrentMaterialView;
+    class UMyMaterialViewWidget* CurrentMaterialView;
 
     int8 MVIndex;
+
+    UPROPERTY()
+    UTexture2D* TestTexture;
 
 };

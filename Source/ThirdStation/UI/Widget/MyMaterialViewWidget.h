@@ -26,6 +26,8 @@ public:
     
     void AddChildren(TArray<UMyMaterialWidget*> MWArray);
 
+    void SetText(FString Message);
+
     // TArray<UMyMaterialWidget*>* GetMaterialWidgetArray(); 
 
     // //Helper for initMap
@@ -35,6 +37,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     class UVerticalBox* MaterialListBox;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+    class UTextBlock* MaterialListText;
 
     UPROPERTY()
     TArray<UMyMaterialWidget*> MaterialWidgetArray;

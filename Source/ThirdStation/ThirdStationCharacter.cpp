@@ -59,6 +59,7 @@ AThirdStationCharacter::AThirdStationCharacter()
 	ActorOverlapping = nullptr;
 
 	bIsCorrect = false;
+	bActorIsDone = false;
 }
 
 
@@ -207,12 +208,11 @@ void AThirdStationCharacter::OnEnterPressed(){
 					if(MyInventoryHUD->ClearConfirmWidget()){
 						// UE_LOG(LogTemp, Warning, TEXT("CurrIn is : %s"), *CurrInventory);
 						MyInventoryHUD->UpdateFinalWidget(CurrInventoryType, MyFinalStageActor->IsCorrectItem(CurrInventory), MyFinalStageActor->GetMessage());
+						if(CurrInventoryType) updateInventory(-1, FString(TEXT("Empty")));
+
 					}
-					else{
-						MyFinalStageActor = nullptr;
-					}
-					updateInventory(-1, FString(TEXT("Empty")));
-					
+					//check here
+					MyFinalStageActor = nullptr;
 				}
 			}
 			bIsCorrect = false;
@@ -289,13 +289,20 @@ void AThirdStationCharacter::OnOverlapBegin(class AActor* OverlappedActor, class
 		AMyTraderActor* MyTraderActor = Cast<AMyTraderActor>(OtherActor);
         if(MyTraderActor){
 			CurrOverlapType = 2;
-            MyInventoryHUD->UpdateMaterialView(CurrInventory);
+            MyInventoryHUD->UpdateMaterialView(CurrInventory, CurrInventoryType);
 			
         }
 
 		AMyFinalStageActor* MyFinalStageActor = Cast<AMyFinalStageActor>(OtherActor);
         if(MyFinalStageActor){
-			MyInventoryHUD->ShowConfirmWidget();
+			bActorIsDone = MyFinalStageActor->IsDone();
+			if(bActorIsDone){
+				MyInventoryHUD->UpdateFinalWidget(2, false, TEXT(""));
+			}
+			else {
+				MyInventoryHUD->ShowConfirmWidget();
+			}
+			
 			CurrOverlapType = 3;
 			// bIsCorrect = MyFinalStageActor->IsCorrectItem(CurrInventory);
             // MyInventoryHUD->UpdateMaterialView(CurrInventory);
@@ -337,6 +344,7 @@ void AThirdStationCharacter::OnOverlapEnd(class AActor* OverlappedActor, class A
 			MyInventoryHUD->ClearConfirmWidget();
             MyInventoryHUD->ClearFinalWidget();
 			bIsCorrect = false;
+			bActorIsDone = false;
             // MyInventoryHUD->UpdateMaterialView(CurrInventory);
 			
         }

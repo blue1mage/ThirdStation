@@ -14,7 +14,8 @@ void UMyMaterialWidget::NativeConstruct(){
     bIsInitImage = false;
 
     Regular = FLinearColor(0.25f, 0.32f, 0.71f, 0.7f);
-    Select = FLinearColor(0.1f, 0.73f, 0.83f, 0.7f);
+    // Select = FLinearColor(0.1f, 0.73f, 0.83f, 0.7f);
+    Select = FLinearColor(0.22f, 1.0f, 0.07f, 0.7f);
     Chosen = FLinearColor(0.8f, 0.86f, 0.22f, 0.7f);
     MaterialButton->SetBackgroundColor(Regular);
 
@@ -35,9 +36,10 @@ FString UMyMaterialWidget::getString(){
     return ThisMaterialName;
 }
    
-void UMyMaterialWidget::initMaterialImage(UTexture2D* InventoryTexture, bool bMatchSize){
-    if(!bIsInitImage && MaterialImage){
-        //TODO
+void UMyMaterialWidget::initMaterialImage(UTexture2D* MaterialTexture, bool bMatchSize){
+    if(!bIsInitImage && MaterialImage && MaterialTexture){
+        MaterialImage->SetBrushFromTexture(MaterialTexture, bMatchSize);
+        bIsInitText = !bIsInitText; 
     }
     
 }
@@ -45,21 +47,20 @@ void UMyMaterialWidget::initMaterialImage(UTexture2D* InventoryTexture, bool bMa
 
 void UMyMaterialWidget::setSelected(bool selected){
     if(MaterialButton){
-        if(selected){
+        if(!selected){
             UE_LOG(LogTemp, Warning, TEXT("true"));
-            MaterialButton->SetBackgroundColor(Select);
+            MaterialButton->SetBackgroundColor(Regular);
         }
         else{
-            UE_LOG(LogTemp, Warning, TEXT("false"));
-            UE_LOG(LogTemp, Warning, TEXT("%s"), *Regular.ToString());
-            MaterialButton->SetBackgroundColor(Regular);
+            UE_LOG(LogTemp, Warning, TEXT("true"));
+            MaterialButton->SetBackgroundColor(Select);
         }
     }
     
 }
 
-void UMyMaterialWidget::setChosen(){
-    MaterialButton->SetBackgroundColor(Chosen);
-}
+// void UMyMaterialWidget::setChosen(){
+//     MaterialButton->SetBackgroundColor(Chosen);
+// }
 
 

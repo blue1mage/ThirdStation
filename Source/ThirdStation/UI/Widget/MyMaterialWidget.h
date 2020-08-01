@@ -24,11 +24,12 @@ public:
     
     void initMaterialText(FString MaterialName);
     
+    UFUNCTION(BlueprintCallable)
     void initMaterialImage(UTexture2D* MaterialTexture, bool bMatchSize);
 
     void setSelected(bool selected);
 
-    void setChosen();
+    // void setChosen();
 
     FString getString();
     

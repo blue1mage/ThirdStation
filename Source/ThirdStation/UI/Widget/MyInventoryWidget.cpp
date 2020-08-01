@@ -44,10 +44,14 @@ void UMyInventoryWidget::ClearInventoryText(){
 
 
 void UMyInventoryWidget::UpdateInventoryImage(UTexture2D* InventoryTexture, bool bMatchSize){
-    //TODO
+    if(InventoryTexture){
+        UE_LOG(LogTemp, Warning, TEXT("there's a texture"));
+        InventoryImage->SetBrushFromTexture(InventoryTexture, bMatchSize);
+    }
+    UE_LOG(LogTemp, Warning, TEXT("no texture"));
     
 }
 
-void UMyInventoryWidget::ClearInventoryImage(){
-    //TODO
-}
+// void UMyInventoryWidget::ClearInventoryImage(){
+//     //TODO
+// }

@@ -18,15 +18,15 @@ void UMyItemWidget::UpdateItemText(FText ItemName){
         
         ItemTextBlock->SetText(ItemName);
         
-//        if(!IsInViewport()){
-//            AddToViewport();
-//        }
+// //        if(!IsInViewport()){
+// //            AddToViewport();
+// //        }
         
-        //Use code to set visibility of Another Widget
-        if(ItemTextBlock->Visibility == ESlateVisibility::Hidden){
-            ItemTextBlock->SetVisibility(ESlateVisibility::Visible);
-        }
-        //end
+//         //Use code to set visibility of Another Widget
+//         if(ItemTextBlock->Visibility == ESlateVisibility::Hidden){
+//             ItemTextBlock->SetVisibility(ESlateVisibility::Visible);
+//         }
+//         //end
         
         
     }

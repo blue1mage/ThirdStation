@@ -68,6 +68,13 @@ void UMyMaterialViewWidget::AddChildren(TArray<UMyMaterialWidget*> MWArray){
     
 }
 
+void UMyMaterialViewWidget::SetText(FString Message){
+    if(MaterialListText){
+        MaterialListText->SetText(FText::FromString(Message));
+    }
+}
+
+
 // void UMyMaterialViewWidget::ClearChildren(){
 //     MaterialListBox->ClearChildren();
 // }
