@@ -42,7 +42,11 @@ void AMyInventoryHUD::BeginPlay(){
         FinalWidget->AddToViewport();
         FinalWidget->SetVisibility(ESlateVisibility::Hidden);
     }
-    
+
+    //bool
+    bGold = false;
+    bMyrrh = false;
+    bFrankincense = false;
 }
 
 /////////////////////////////////////////////////
@@ -192,14 +196,14 @@ void AMyInventoryHUD::makeMaterialViewMap(){
     UE_LOG(LogTemp, Warning, TEXT("Constructing MAterial View"));
 
     TArray<FString> shovel;
-    shovel.Add(FString(TEXT("mustard seeds")));
+    shovel.Add(FString(TEXT("mustard tree seeds")));
     shovel.Add(FString(TEXT("wheat seeds")));
     shovel.Add(FString(TEXT("olive seeds")));
 
     TArray<FString> incense;
     incense.Add(FString(TEXT("frankincense")));
     incense.Add(FString(TEXT("stacte")));
-    incense.Add(FString(TEXT("cinnimon bark")));
+    incense.Add(FString(TEXT("cinnamon bark")));
     incense.Add(FString(TEXT("saffron")));
 
 
@@ -372,5 +376,23 @@ void AMyInventoryHUD::ClearInventory(){
         //InventoryWidget->ClearInventoryImage();
     }
     
+}
+
+
+void AMyInventoryHUD::SetIsDone(FString Item){
+    UE_LOG(LogTemp, Warning, TEXT("set is done"));
+    if(Item.Equals(FString(TEXT("gold")))){
+        bGold = true;
+    }
+    else if(Item.Equals(FString(TEXT("frankincense")))){
+        bFrankincense = true;
+    } 
+    else if(Item.Equals(FString(TEXT("myrrh")))){
+        bMyrrh = true;
+    }
+}
+
+bool AMyInventoryHUD::CheckIsDone(){
+    return bGold && bFrankincense && bMyrrh;
 }
 

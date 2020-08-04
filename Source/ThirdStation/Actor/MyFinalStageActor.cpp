@@ -11,8 +11,17 @@ AMyFinalStageActor::AMyFinalStageActor()
     bIsDone = false;
     Correct = FString(TEXT(""));
     DisplayMessage = FString(TEXT(""));
+    bReplicates = true;
+    // SetReplicates(true);
 
 }
+
+// AMyFinalStageActor::AMyFinalStageActor( const class FPostConstructInitializeProperties & PCIP ) : Super( PCIP )
+// { 
+//     bReplicates = true;
+//     AMyFinalStageActor();
+
+// }
 
 // Called when the game starts or when spawned
 void AMyFinalStageActor::BeginPlay()
@@ -25,14 +34,19 @@ void AMyFinalStageActor::BeginPlay()
 void AMyFinalStageActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    SetActorTickEnabled(false);
 
 }
 
-bool AMyFinalStageActor::IsCorrectItem(FString Check){
-    // UE_LOG(LogTemp, Warning, TEXT("Check : %s"), *Check);
-    // UE_LOG(LogTemp, Warning, TEXT("Correct : %s"), *Correct);
+bool AMyFinalStageActor::IsCorrectItem(const FString& Check){
+    UE_LOG(LogTemp, Warning, TEXT("Check : %s"), *Check);
+    UE_LOG(LogTemp, Warning, TEXT("Correct : %s"), *Correct);
     if(Correct.Equals(Check)){
         bIsDone = true;
+        // SetDone();
+        // turnToDone();
+        // ClientRPCCFunction();
+        // ClientFunc();
         return true;
     }
        
@@ -45,6 +59,13 @@ bool AMyFinalStageActor::IsDone(){
     return bIsDone;
 }
 
+// void AMyFinalStageActor::SetDone(){
+//     bIsDone = true;
+// }
+
+// void AMyFinalStageActor::turnToDone_Implementation(){
+//     bIsDone = true;
+// }
 
 void AMyFinalStageActor::initFunction(FString FinalName, FString FinalMessage){
     Correct = FinalName;
@@ -58,3 +79,29 @@ FString AMyFinalStageActor::GetMessage(){
     return DisplayMessage;
 }
 
+
+
+// // /// replication
+// void AMyFinalStageActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const{
+//     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//     DOREPLIFETIME(AMyFinalStageActor, bIsDone);
+// }
+
+// bool AMyFinalStageActor::ClientRPCCFunction_Validate()
+//  {
+//      return true;
+//  }
+
+//  void AMyFinalStageActor::ClientRPCCFunction_Implementation()
+//  {
+//      UE_LOG(LogTemp, Warning, TEXT("client"));
+//      bIsDone = true;
+//      ClientFunc();
+//  }
+ 
+//  void AMyFinalStageActor::ClientFunc_Implementation()
+//  {
+//      UE_LOG(LogTemp, Warning, TEXT("server"));
+//      bIsDone = true;
+ 
+//  }

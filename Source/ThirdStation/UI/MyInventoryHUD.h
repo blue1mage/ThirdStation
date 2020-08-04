@@ -98,6 +98,14 @@ public:
     UFUNCTION()
     void ClearFinalWidget();
 
+    //update bools
+    //Check final actor bool
+    UFUNCTION()
+    void SetIsDone(FString Item);
+
+    UFUNCTION(BlueprintCallable)
+	bool CheckIsDone();
+
     //Inventory
     UFUNCTION()
     void UpdateInventory(FText ItemName);
@@ -133,6 +141,7 @@ public:
     /**Map to index*/
     UPROPERTY(EditAnywhere)
     TMap<FString, UTexture2D*> MyTextureMap;
+        
     
 private:
     UPROPERTY()
@@ -158,5 +167,11 @@ private:
 
     UPROPERTY()
     UTexture2D* TestTexture;
+
+    bool bGold;
+    bool bMyrrh;
+    bool bFrankincense;
+
+
 
 };

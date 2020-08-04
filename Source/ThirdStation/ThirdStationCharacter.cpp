@@ -60,6 +60,7 @@ AThirdStationCharacter::AThirdStationCharacter()
 
 	bIsCorrect = false;
 	bActorIsDone = false;
+	bServerClient = false;
 }
 
 
@@ -205,10 +206,30 @@ void AThirdStationCharacter::OnEnterPressed(){
 			if(ActorOverlapping){
 				AMyFinalStageActor* MyFinalStageActor = Cast<AMyFinalStageActor>(ActorOverlapping);
 				if(MyFinalStageActor){
-					if(MyInventoryHUD->ClearConfirmWidget()){
+					if(MyInventoryHUD->ClearConfirmWidget() && !MyFinalStageActor->IsDone()){
 						// UE_LOG(LogTemp, Warning, TEXT("CurrIn is : %s"), *CurrInventory);
-						MyInventoryHUD->UpdateFinalWidget(CurrInventoryType, MyFinalStageActor->IsCorrectItem(CurrInventory), MyFinalStageActor->GetMessage());
-						if(CurrInventoryType) updateInventory(-1, FString(TEXT("Empty")));
+						// MyInventoryHUD->UpdateFinalWidget(CurrInventoryType, MyFinalStageActor->IsCorrectItem(CurrInventory), MyFinalStageActor->GetMessage());
+						// if(CurrInventoryType) updateInventory(-1, FString(TEXT("Empty")));
+
+
+
+						UE_LOG(LogTemp, Warning, TEXT("check my final is : %s"), *CurrInventory);
+						bool haveCorrectItem = MyFinalStageActor->IsCorrectItem(CurrInventory);
+						MyInventoryHUD->UpdateFinalWidget(CurrInventoryType, haveCorrectItem, MyFinalStageActor->GetMessage());
+						UE_LOG(LogTemp, Warning, TEXT("after is : %s"), *CurrInventory);
+
+						if(haveCorrectItem){
+							MyInventoryHUD->SetIsDone(CurrInventory);
+							UE_LOG(LogTemp, Warning, TEXT("CurrInventory : %s"), *CurrInventory);
+							UpdateMVRPC(CurrInventory, MyFinalStageActor);
+							UpdateMVClient(CurrInventory, MyFinalStageActor);
+							ShowMatThu();
+							bServerClient = true;
+						}
+						UE_LOG(LogTemp, Warning, TEXT("after if : %s"), *CurrInventory);
+						//should be very end
+						// if(CurrInventoryType) updateInventory(-1, FString(TEXT("Empty")));
+
 
 					}
 					//check here
@@ -296,7 +317,9 @@ void AThirdStationCharacter::OnOverlapBegin(class AActor* OverlappedActor, class
 		AMyFinalStageActor* MyFinalStageActor = Cast<AMyFinalStageActor>(OtherActor);
         if(MyFinalStageActor){
 			bActorIsDone = MyFinalStageActor->IsDone();
-			if(bActorIsDone){
+			UE_LOG(LogTemp, Warning, TEXT("here"));
+			if(MyFinalStageActor->IsDone()){
+				UE_LOG(LogTemp, Warning, TEXT("updating with correct message"));
 				MyInventoryHUD->UpdateFinalWidget(2, false, TEXT(""));
 			}
 			else {
@@ -345,6 +368,10 @@ void AThirdStationCharacter::OnOverlapEnd(class AActor* OverlappedActor, class A
             MyInventoryHUD->ClearFinalWidget();
 			bIsCorrect = false;
 			bActorIsDone = false;
+			if(CurrInventoryType && MyFinalStageActor && bServerClient) {
+				updateInventory(-1, FString(TEXT("Empty")));
+				bServerClient = false;
+			}
             // MyInventoryHUD->UpdateMaterialView(CurrInventory);
 			
         }
@@ -352,3 +379,31 @@ void AThirdStationCharacter::OnOverlapEnd(class AActor* OverlappedActor, class A
     }
 }
 
+
+/////////////////////////////////////////////
+//server-client
+bool AThirdStationCharacter::UpdateMVRPC_Validate(const FString& Item, AMyFinalStageActor* MyFinalStageActor){
+	return true;
+}
+
+
+void AThirdStationCharacter::UpdateMVRPC_Implementation(const FString& Item, AMyFinalStageActor* MyFinalStageActor){
+	AMyInventoryHUD* MyInventoryHUD = getGameHUD();
+	if(!MyInventoryHUD || !MyFinalStageActor) return;
+	UE_LOG(LogTemp, Warning, TEXT("Item : %s"), *Item);
+	MyFinalStageActor->IsCorrectItem(Item);
+	MyInventoryHUD->SetIsDone(Item);
+	UpdateMVClient(Item, MyFinalStageActor);
+}
+ 
+void AThirdStationCharacter::UpdateMVClient_Implementation(const FString& Item, AMyFinalStageActor* MyFinalStageActor){
+	AMyInventoryHUD* MyInventoryHUD = getGameHUD();
+	if(!MyInventoryHUD) return;
+	UE_LOG(LogTemp, Warning, TEXT("Item : %s"), *Item);
+	MyFinalStageActor->IsCorrectItem(Item);
+	MyInventoryHUD->SetIsDone(Item);
+}
+
+
+void AThirdStationCharacter::ShowMatThu_Implementation(){
+}

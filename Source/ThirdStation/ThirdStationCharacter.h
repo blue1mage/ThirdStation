@@ -8,6 +8,7 @@
 #include "Actor/MyItemActor.h"
 #include "Actor/MyTraderActor.h"
 #include "Actor/MyFinalStageActor.h"
+#include "Net/UnrealNetwork.h"
 #include "ThirdStationCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -24,6 +25,11 @@ class AThirdStationCharacter : public ACharacter
 	class UCameraComponent* FollowCamera;
 public:
 	AThirdStationCharacter();
+
+
+	/**Helper to get the gameHUD*/
+	UFUNCTION(BlueprintCallable)
+    AMyInventoryHUD* getGameHUD();
 
 	/** Returns type of inventory, empty -1, item 0, or material 1*/
     int8 getInventoryType();
@@ -59,7 +65,18 @@ public:
     /**detect overlapend*/
     UFUNCTION()
     void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
+
+	/*Client Server functions for updating an item*/
+	UFUNCTION(reliable, Server, WithValidation) // Called on the client executed on the server
+    void UpdateMVRPC(const FString& Item, AMyFinalStageActor* MyFinalStageActor);
+ 
+    UFUNCTION(reliable, NetMulticast) // Called on the server executed to all the clients
+    void UpdateMVClient(const FString& Item, AMyFinalStageActor* MyFinalStageActor);
     
+	/*Client Server functions for updating an item*/
+	UFUNCTION(BlueprintNativeEvent) 
+    void ShowMatThu();
+
     /**input enter*/
     UFUNCTION()
     void OnEnterPressed();
@@ -113,8 +130,6 @@ private:
 	UPROPERTY()
 	class AActor* ActorOverlapping;
 
-    /**Helper to get the gameHUD*/
-    AMyInventoryHUD* getGameHUD();
     
     //UProperty???
     FString CurrInventory;
@@ -131,6 +146,8 @@ private:
 
 	bool bIsCorrect;
 	bool bActorIsDone;
+
+	bool bServerClient;
 
 protected:
 	// APawn interface
