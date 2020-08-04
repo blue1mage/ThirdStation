@@ -39,8 +39,8 @@ void AMyFinalStageActor::Tick(float DeltaTime)
 }
 
 bool AMyFinalStageActor::IsCorrectItem(const FString& Check){
-    UE_LOG(LogTemp, Warning, TEXT("Check : %s"), *Check);
-    UE_LOG(LogTemp, Warning, TEXT("Correct : %s"), *Correct);
+    // UE_LOG(LogTemp, Warning, TEXT("Check : %s"), *Check);
+    // UE_LOG(LogTemp, Warning, TEXT("Correct : %s"), *Correct);
     if(Correct.Equals(Check)){
         bIsDone = true;
         // SetDone();

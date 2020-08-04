@@ -28,7 +28,7 @@ void AMyInventoryHUD::BeginPlay(){
         InventoryWidget = CreateWidget<UMyInventoryWidget>(GetWorld(), InventoryWidgetClass);
         // InventoryWidget->UpdateInventoryImage(*MyTextureMap.Find(FString(TEXT("Empty"))), true);
         InventoryWidget->AddToViewport();
-        UE_LOG(LogTemp, Warning, TEXT("inventory yay"));
+        // UE_LOG(LogTemp, Warning, TEXT("inventory yay"));
     }
 
     if(ConfirmWidgetClass){
@@ -76,7 +76,7 @@ void AMyInventoryHUD::ClearItemText(){
 /////////////////////////////////////////////////
 //MATERIALVIEW WIDGET
 void AMyInventoryHUD::UpdateMaterialView(FString MappingName, int8 InventoryType){
-    UE_LOG(LogTemp, Warning, TEXT("start"));
+    // UE_LOG(LogTemp, Warning, TEXT("start"));
     //null check
     // MW->SetText(FString(TEXT(")));
 
@@ -99,14 +99,14 @@ void AMyInventoryHUD::UpdateMaterialView(FString MappingName, int8 InventoryType
     if(MW != nullptr){
         CurrentMaterialView = MW;
         
-        UE_LOG(LogTemp, Warning, TEXT("in if"));
+        // UE_LOG(LogTemp, Warning, TEXT("in if"));
         if(CurrentMaterialView->Visibility == ESlateVisibility::Hidden){
-            UE_LOG(LogTemp, Warning, TEXT("visibility"));
+            // UE_LOG(LogTemp, Warning, TEXT("visibility"));
             CurrentMaterialView->SetVisibility(ESlateVisibility::Visible);
         }
         MVIndex=0;
         if(CurrentMaterialView->MaterialWidgetArray.IsValidIndex(MVIndex)){
-            UE_LOG(LogTemp, Warning, TEXT("index"));
+            // UE_LOG(LogTemp, Warning, TEXT("index"));
             CurrentMaterialView->MaterialWidgetArray[MVIndex]->setSelected(true);
         }
         switch(InventoryType){
@@ -124,7 +124,7 @@ void AMyInventoryHUD::UpdateMaterialView(FString MappingName, int8 InventoryType
         }
         
     }
-    UE_LOG(LogTemp, Warning, TEXT("end"));
+    // UE_LOG(LogTemp, Warning, TEXT("end"));
 
 }
 
@@ -193,7 +193,7 @@ void AMyInventoryHUD::makeMaterialViewMap(){
         return;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("Constructing MAterial View"));
+    // UE_LOG(LogTemp, Warning, TEXT("Constructing MAterial View"));
 
     TArray<FString> shovel;
     shovel.Add(FString(TEXT("mustard tree seeds")));
@@ -234,7 +234,7 @@ void AMyInventoryHUD::makeMaterialViewMap(){
 
     
     initMaterialView(FString(TEXT("message no")), empty);
-    UE_LOG(LogTemp, Warning, TEXT("beginplay"));
+    // UE_LOG(LogTemp, Warning, TEXT("beginplay"));
 }
 
 
@@ -321,11 +321,11 @@ void AMyInventoryHUD::UpdateFinalWidget(int8 InventoryType, bool IsCorrect, FStr
             case 1:
                 
                 if(IsCorrect){
-                    UE_LOG(LogTemp, Warning, TEXT("Correct"));
+                    // UE_LOG(LogTemp, Warning, TEXT("Correct"));
                     FinalWidget->SetMessage(TEXT("YES! This is it! Thank you!"));
                 }
                 else{
-                    UE_LOG(LogTemp, Warning, TEXT("Not correct"));
+                    // UE_LOG(LogTemp, Warning, TEXT("Not correct"));
                     FinalWidget->SetMessage(PersonalMessage);
                 }
                 break;
@@ -380,7 +380,7 @@ void AMyInventoryHUD::ClearInventory(){
 
 
 void AMyInventoryHUD::SetIsDone(FString Item){
-    UE_LOG(LogTemp, Warning, TEXT("set is done"));
+    // UE_LOG(LogTemp, Warning, TEXT("set is done"));
     if(Item.Equals(FString(TEXT("gold")))){
         bGold = true;
     }

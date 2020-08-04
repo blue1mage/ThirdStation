@@ -213,20 +213,20 @@ void AThirdStationCharacter::OnEnterPressed(){
 
 
 
-						UE_LOG(LogTemp, Warning, TEXT("check my final is : %s"), *CurrInventory);
+						// UE_LOG(LogTemp, Warning, TEXT("check my final is : %s"), *CurrInventory);
 						bool haveCorrectItem = MyFinalStageActor->IsCorrectItem(CurrInventory);
 						MyInventoryHUD->UpdateFinalWidget(CurrInventoryType, haveCorrectItem, MyFinalStageActor->GetMessage());
-						UE_LOG(LogTemp, Warning, TEXT("after is : %s"), *CurrInventory);
+						// UE_LOG(LogTemp, Warning, TEXT("after is : %s"), *CurrInventory);
 
 						if(haveCorrectItem){
 							MyInventoryHUD->SetIsDone(CurrInventory);
-							UE_LOG(LogTemp, Warning, TEXT("CurrInventory : %s"), *CurrInventory);
+							// UE_LOG(LogTemp, Warning, TEXT("CurrInventory : %s"), *CurrInventory);
 							UpdateMVRPC(CurrInventory, MyFinalStageActor);
 							UpdateMVClient(CurrInventory, MyFinalStageActor);
 							ShowMatThu();
 							bServerClient = true;
 						}
-						UE_LOG(LogTemp, Warning, TEXT("after if : %s"), *CurrInventory);
+						// UE_LOG(LogTemp, Warning, TEXT("after if : %s"), *CurrInventory);
 						//should be very end
 						// if(CurrInventoryType) updateInventory(-1, FString(TEXT("Empty")));
 
@@ -390,7 +390,7 @@ bool AThirdStationCharacter::UpdateMVRPC_Validate(const FString& Item, AMyFinalS
 void AThirdStationCharacter::UpdateMVRPC_Implementation(const FString& Item, AMyFinalStageActor* MyFinalStageActor){
 	AMyInventoryHUD* MyInventoryHUD = getGameHUD();
 	if(!MyInventoryHUD || !MyFinalStageActor) return;
-	UE_LOG(LogTemp, Warning, TEXT("Item : %s"), *Item);
+	// UE_LOG(LogTemp, Warning, TEXT("Item : %s"), *Item);
 	MyFinalStageActor->IsCorrectItem(Item);
 	MyInventoryHUD->SetIsDone(Item);
 	UpdateMVClient(Item, MyFinalStageActor);
@@ -399,7 +399,7 @@ void AThirdStationCharacter::UpdateMVRPC_Implementation(const FString& Item, AMy
 void AThirdStationCharacter::UpdateMVClient_Implementation(const FString& Item, AMyFinalStageActor* MyFinalStageActor){
 	AMyInventoryHUD* MyInventoryHUD = getGameHUD();
 	if(!MyInventoryHUD) return;
-	UE_LOG(LogTemp, Warning, TEXT("Item : %s"), *Item);
+	// UE_LOG(LogTemp, Warning, TEXT("Item : %s"), *Item);
 	MyFinalStageActor->IsCorrectItem(Item);
 	MyInventoryHUD->SetIsDone(Item);
 }
